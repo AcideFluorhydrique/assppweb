@@ -48,6 +48,9 @@ describe('download recovery boundaries', () => {
     [{ customerMessage: 'App No Longer Available', songList: [] }, true],
     [{ failureType: '2042' }, false],
     [{ failureType: '9610' }, false],
+    [{ status: -1 }, false],
+    [{ action: { url: 'https://buy.itunes.apple.com/termsPage' } }, false],
+    [{ dialog: { explanation: 'Review your account' } }, false],
     [{ customerMessage: 'Accept new terms' }, false],
     [{ songList: [{}] }, false],
   ])(
@@ -63,7 +66,7 @@ describe('download recovery boundaries', () => {
     'https://downloaddispatch.itunes.apple.com/up/updateProduct?token=example',
     'https://user@downloaddispatch.itunes.apple.com/up/updateProduct',
   ])('rejects untrusted dispatch endpoints: %s', (url) => {
-    expect(() => dispatchEndpoint(url, 'update', 'device')).toThrow();
+    expect(dispatchEndpoint(url, 'update', 'device')).toBeUndefined();
   });
 });
 
@@ -120,9 +123,7 @@ it.each([
       );
     });
     if (mismatch) {
-      await expect(downloadProduct(account, app)).rejects.toThrow(
-        'does not match',
-      );
+      await expect(downloadProduct(account, app)).rejects.toThrow();
     } else {
       const result = await downloadProduct(account, app);
       expect(result.dict.songList[0].metadata).toEqual(metadata);

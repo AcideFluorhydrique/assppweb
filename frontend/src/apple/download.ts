@@ -1,6 +1,6 @@
+import i18n from '../i18n';
 import { downloadProduct, DownloadError } from './downloadProduct';
 import { buildPlist } from './plist';
-import i18n from '../i18n';
 import type { Account, Software, DownloadOutput, Sinf } from '../types';
 
 export { DownloadError } from './downloadProduct';
